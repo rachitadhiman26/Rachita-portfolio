@@ -127,170 +127,17 @@ function showMessage(text, type) {
     }, 5000);
 }
 
-// View certificate function for Certificates section
-function viewCertificate(src) {
-    // Create modal overlay
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        cursor: pointer;
+// Image placeholder information display
+function showImageInfo() {
+    const message = `
+        ✅ To display images:
+        1. Download this HTML file
+        2. Place image files in the same folder
+        3. Required files: rachita-2025-photo.jpg (hero & about sections), Screenshot-2025-10-21-221353.jpg, Screenshot-2025-10-22-160317.jpg, Screenshot-2025-10-21-223221.jpg, Screenshot-2025-10-21-182638.jpg, Screenshot-2025-10-21-182713.jpg (HackerRank), Screenshot-2025-10-22-172846.jpg (E-Curricula)
+        4. Open HTML file locally or upload to GitHub
     `;
     
-    // Create image element
-    const img = document.createElement('img');
-    img.src = src;
-    img.style.cssText = `
-        max-width: 90%;
-        max-height: 90%;
-        object-fit: contain;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    `;
-    
-    // Create close button
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '×';
-    closeBtn.style.cssText = `
-        position: absolute;
-        top: 20px;
-        right: 30px;
-        background: var(--color-primary);
-        color: white;
-        border: none;
-        font-size: 30px;
-        cursor: pointer;
-        padding: 10px 15px;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    `;
-    
-    closeBtn.addEventListener('mouseenter', () => {
-        closeBtn.style.background = 'var(--color-primary-hover)';
-        closeBtn.style.transform = 'scale(1.1)';
-    });
-    
-    closeBtn.addEventListener('mouseleave', () => {
-        closeBtn.style.background = 'var(--color-primary)';
-        closeBtn.style.transform = 'scale(1)';
-    });
-    
-    // Add elements to modal
-    modal.appendChild(img);
-    modal.appendChild(closeBtn);
-    
-    // Add event listeners
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-    
-    closeBtn.addEventListener('click', () => {
-        document.body.removeChild(modal);
-    });
-    
-    // Handle escape key
-    const escapeHandler = (e) => {
-        if (e.key === 'Escape') {
-            document.body.removeChild(modal);
-            document.removeEventListener('keydown', escapeHandler);
-        }
-    };
-    document.addEventListener('keydown', escapeHandler);
-    
-    // Add to page
-    document.body.appendChild(modal);
-}
-
-// View document function for E-Curricula
-function viewDocument(src) {
-    // Create modal overlay
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        cursor: pointer;
-    `;
-    
-    // Create image element
-    const img = document.createElement('img');
-    img.src = src;
-    img.style.cssText = `
-        max-width: 90%;
-        max-height: 90%;
-        object-fit: contain;
-        border-radius: 8px;
-    `;
-    
-    // Create close button
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '×';
-    closeBtn.style.cssText = `
-        position: absolute;
-        top: 20px;
-        right: 30px;
-        background: var(--color-primary);
-        color: white;
-        border: none;
-        font-size: 30px;
-        cursor: pointer;
-        padding: 10px 15px;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `;
-    
-    // Add elements to modal
-    modal.appendChild(img);
-    modal.appendChild(closeBtn);
-    
-    // Add event listeners
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-    
-    closeBtn.addEventListener('click', () => {
-        document.body.removeChild(modal);
-    });
-    
-    // Handle escape key
-    const escapeHandler = (e) => {
-        if (e.key === 'Escape') {
-            document.body.removeChild(modal);
-            document.removeEventListener('keydown', escapeHandler);
-        }
-    };
-    document.addEventListener('keydown', escapeHandler);
-    
-    // Add to page
-    document.body.appendChild(modal);
+    alert(message);
 }
 
 // Animate elements on scroll
@@ -311,12 +158,19 @@ const observer = new IntersectionObserver((entries) => {
 // Observe elements for animation
 document.addEventListener('DOMContentLoaded', () => {
     // Add initial styles for animation
-    const animateElements = document.querySelectorAll('.project-card, .skill-item, .certificate-item, .curricula-item, .about-profile-img');
+    const animateElements = document.querySelectorAll('.project-card, .skill-item, .image-placeholder, .instructions-card');
     animateElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
+    });
+    
+    // Add click interaction for image placeholders
+    const placeholders = document.querySelectorAll('.image-placeholder');
+    placeholders.forEach(placeholder => {
+        placeholder.addEventListener('click', showImageInfo);
+        placeholder.style.cursor = 'pointer';
     });
 });
 
