@@ -94,7 +94,7 @@ if (contactForm) {
             return;
         }
         
-        // Simulate form submission (in a real app, you'd send this to a server)
+        // Simulate form submission
         showMessage('Thank you for your message! I will get back to you soon.', 'success');
         
         // Reset form
@@ -127,19 +127,6 @@ function showMessage(text, type) {
     }, 5000);
 }
 
-// Image placeholder information display
-function showImageInfo() {
-    const message = `
-        ✅ To display images:
-        1. Download this HTML file
-        2. Place image files in the same folder
-        3. Required files: rachita-2025-photo.jpg (hero & about sections), Screenshot-2025-10-21-221353.jpg, Screenshot-2025-10-22-160317.jpg, Screenshot-2025-10-21-223221.jpg, Screenshot-2025-10-21-182638.jpg, Screenshot-2025-10-21-182713.jpg (HackerRank), Screenshot-2025-10-22-172846.jpg (E-Curricula)
-        4. Open HTML file locally or upload to GitHub
-    `;
-    
-    alert(message);
-}
-
 // Animate elements on scroll
 const observerOptions = {
     threshold: 0.1,
@@ -154,51 +141,6 @@ const observer = new IntersectionObserver((entries) => {
         }
     });
 }, observerOptions);
-
-// Observe elements for animation
-document.addEventListener('DOMContentLoaded', () => {
-    // Add initial styles for animation
-    const animateElements = document.querySelectorAll('.project-card, .skill-item, .image-placeholder, .instructions-card');
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-    
-    // Add click interaction for image placeholders
-    const placeholders = document.querySelectorAll('.image-placeholder');
-    placeholders.forEach(placeholder => {
-        placeholder.addEventListener('click', showImageInfo);
-        placeholder.style.cursor = 'pointer';
-    });
-});
-
-// Typing effect for hero title (optional enhancement)
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-// Initialize typing effect on load
-document.addEventListener('DOMContentLoaded', () => {
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.innerHTML;
-        // Uncomment the line below if you want the typing effect
-        // typeWriter(heroTitle, originalText, 50);
-    }
-});
 
 // Parallax effect for hero section
 window.addEventListener('scroll', () => {
@@ -222,17 +164,86 @@ function animateSkillBars() {
     });
 }
 
-// Initialize skill animation when skills section is visible
-const skillsSection = document.querySelector('#skills');
-if (skillsSection) {
-    const skillsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateSkillBars();
-                skillsObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
+// DOMContentLoaded - All initialization code here
+document.addEventListener('DOMContentLoaded', () => {
+    // Image Modal Logic
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const closeModal = document.getElementById('close-modal');
+    let lastFocusedElement;
+
+    function openModal(src, alt) {
+        lastFocusedElement = document.activeElement;
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        modalImg.src = src;
+        modalImg.alt = alt || "enlarged image";
+        closeModal.focus();
+        document.body.style.overflow = 'hidden';
+    }
     
-    skillsObserver.observe(skillsSection);
-}
+    function closeModalFn() {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+        modalImg.src = '';
+        document.body.style.overflow = '';
+        if (lastFocusedElement) lastFocusedElement.focus();
+    }
+
+    // Click any .image-placeholder img to enlarge
+    document.querySelectorAll('.image-placeholder img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', e => {
+            e.stopPropagation();
+            openModal(img.src, img.alt);
+        });
+    });
+
+    // Close logic
+    if (closeModal) {
+        closeModal.onclick = closeModalFn;
+    }
+    
+    if (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModalFn();
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (modal && modal.classList.contains('active') && (e.key === 'Escape' || e.key === 'Esc')) {
+            closeModalFn();
+        }
+        // Trap focus inside modal
+        if (modal && modal.classList.contains('active')) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                if (closeModal) closeModal.focus();
+            }
+        }
+    });
+
+    // Add initial styles for animation
+    const animateElements = document.querySelectorAll('.project-card, .skill-item, .image-placeholder, .instructions-card');
+    animateElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Initialize skill animation when skills section is visible
+    const skillsSection = document.querySelector('#skills');
+    if (skillsSection) {
+        const skillsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateSkillBars();
+                    skillsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        skillsObserver.observe(skillsSection);
+    }
+});
